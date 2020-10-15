@@ -2,9 +2,9 @@
 <html>
 <head>
 	<title>Todos Goals App</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
 </head>
 <body>
-
 	<div>
 		<h1>Todo List</h1>
 		<input type="text" id="todo" placeholder="Add Todo" />
@@ -17,42 +17,10 @@
 		<button id="goalBtn">Add Goal</button>
 		<ul id="goals"></ul>
 	</div>
-
 <script type="text/javascript">
 	function generateId () {
       return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
     }
-	// Library Code
-	function createStore (reducer) {
-	// The store should have four parts
-	// 1. The state
-	// 2. Get the state.
-	// 3. Listen to changes on the state.
-	// 4. Update the state
-
-	let state
-	let listeners = []
-
-	const getState = () => state
-
-	const subscribe = (listener) => {
-		listeners.push(listener)
-		return () => {
-			listeners = listeners.filter((l) => l !== listener)
-		}
-	}
-
-	const dispatch = (action) => {
-		state = reducer(state, action)
-		listeners.forEach((listener) => listener())
-	}
-
-	return {
-		getState,
-		subscribe,
-		dispatch,
-	}
-}
 
 	// App Code
 	const ADD_TODO = 'ADD_TODO'
@@ -121,14 +89,10 @@
 		}
 	}
 
-	function app (state = {}, action) {
-		return {
-			todos: todos(state.todos, action),
-			goals: goals(state.goals, action),
-		}
-	}
-
-	const store = createStore(app)
+	const store = Redux.createStore(Redux.combineReducers({
+		goals,
+		todos
+	}))
 
 	store.subscribe(() => {
 		console.log('The current state is:', store.getState())
